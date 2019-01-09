@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <style>
+    html, body {margin: 0; padding: 0;}
+
+      #header {
+         border-top:7px solid #505559;
+         margin:0 auto;
+         width:970px;
+         background: #eee;
+         height: 45px;
+         padding: 20px 0;
+         font: 12px arial, sans-serif;
+      }
+
+      #header form {
+         float: right;
+         margin-right: 30px;
+         height: 40px;
+         padding-top: 8px;
+         position: relative;
+         left: -19%; /* or right 50% */
+         text-align: left;
+      }
+
+      #header form label {
+         display: inline-block;
+         margin: 0 2px;
+      }
+      #header_container form input {}
+
+      #header form #s-user,
+      #header form #s-pass {
+         display: block;
+         width: 250px;
+         border: 1px solid #eee;
+         padding: 3px 0 3px 0;
+         margin-bottom: -1px;
+      }
+
+      #header form .submit {
+         height: 23px;
+         vertical-align: bottom;
+         background: #111111;
+         color: #fff;
+         border: 1px solid #ddd;
+         -moz-border-radius: 5px;
+         border-radius: 5px;
+         }
+    </style>
+    <script src="./angular.min.js"></script>
+  </head>
+<body ng-app="myApp" ng-controller="myctl">
+
+  <br><br>
+      <div id="header">
+        <form id="search">
+          <label>User Name <input type="text" name="s-user" id="s-user" ng-model="uname"></label>
+          <label>Password<input type="password" name="s-pass" id="s-pass" ng-model="pass"></label>
+          <button ng-click="logUserIn()" class="submit">Login</button>
+        </form>
+      </div>
+      <center>
+        <hr />
+        <br />
+        <br />
+        <br />
+          <img class="image" src="./Resources/instagram.png" height="300" width="300">
+        <br />
+        <h2>By Shubham Kamath</h2>
+      </center>
+  <script>
+    var app = angular.module("myApp",[]);
+    app.controller("myctl",myCtlFunc);
+    myCtlFunc.$inject = ['$scope','$http','$window','$location']
+    function myCtlFunc($scope,$http,$window,$location){
+      $scope.uname="";
+      $scope.pass="";
+      $scope.logUserIn = function(){
+        var data = {
+          "user": $scope.uname,
+          "pas": $scope.pass
+        }
+        $scope.dataMain = JSON.stringify(data)
+        $http.put("http://localhost:5000/userData",$scope.dataMain)
+        .then(logIn,logError);
+      }
+      var logIn = function(response) {
+           if ( response.data == 1 ){
+             $window.location.href = "http://localhost/Python-Project/userMain.html";
+           }
+      }
+      var logError = function(){
+        //write error handling code here
+      }
+    };
+  </script>
+</body>
+</html>

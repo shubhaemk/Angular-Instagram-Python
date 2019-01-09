@@ -1,0 +1,431 @@
+<html>
+<head>
+      <link rel="stylesheet" href="./Leaflet/leaflet.css" />
+      <script src="./Leaflet/leaflet.js"></script>
+      <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+      <style>
+        #mapid {
+          height: 1000px;
+          width : 1000px;
+        }
+        #likesCount{
+          float: left;
+        }
+        #likersImageDiv{
+          float:right;
+        }
+        #followImageDiv{
+          float:left;
+        }
+        #followingImageDiv{
+          float:right;
+        }
+        .common{
+          display: block;
+          text-align: center;
+          padding: 16px;
+          text-decoration: none;
+        }
+        .common:hover{
+          background-color: #BBBBBB
+        }
+        .instagram{
+            background: #f09433;
+            background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+            }
+        .anal{
+          display: block;
+          color: black;
+          text-align: center;
+          padding: 16px;
+          text-decoration: none;
+          float: left;
+        }
+        .anal:hover{
+          background-color: #111111;
+          color: white;
+        }
+        a:link {
+            color: black;
+          }
+        img.foo {
+            -webkit-border-radius: 50px;
+            -moz-border-radius: 50px;
+            border-radius: 50px;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            float:center;
+        }
+
+        li {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 16px;
+            text-decoration: none;
+        }
+        li:hover {
+            background-color: #111111;
+        }
+        li:click {
+            color: #881111;
+        }
+        li:active {
+          color: #881111;
+        }
+    </style>
+  <script src="./angular.min.js"></script>
+</head>
+  <body ng-app="myApp" ng-controller="myctl" >
+    <div class="instagram">
+      <center>
+        <br />
+        <br />
+        <p>
+          <h3>(<a href="https://www.instagram.com/{{uname['a']['user']['username']}}/">@{{uname['a']['user']['username']}}</a>)</h3>
+        </p>
+      </center>
+      <table border="0.5" align="center">
+        <tr>
+          <td rowspan="2">
+            <img class="foo"ng-src="{{uname['a']['user']['hd_profile_pic_url_info']['url']}}" height="100" width="100"/>&nbsp;&nbsp;&nbsp;&nbsp;
+          </td>
+          <td>
+            <b>Posts&nbsp;&nbsp;&nbsp;</b>
+          </td>
+          <td>
+            <b>Followers&nbsp;&nbsp;&nbsp;</b>
+          </td>
+          <td>
+            <b>Following&nbsp;&nbsp;&nbsp;</b>
+          </td>
+        </tr>
+        <tr align="center">
+          <td>
+            {{uname['b']['user']['media_count']}}
+          </td>
+          <td>
+            {{uname['b']['user']['follower_count']}}
+          </td>
+          <td>
+            {{uname['b']['user']['following_count']}}
+          </td>
+        </tr>
+      </table>
+      <br />
+      <center>
+            <h4><b>{{uname['a']['user']['full_name']}}</b></h4>
+            {{uname['a']['user']['biography']}}
+              <br />
+              <br />
+      </center>
+      <ul>
+              <li ng-click="showDiv = 1">Profile</li>
+              <li ng-click="showDiv = 2;feedFunc()">My Feed</li>
+              <li ng-click="showDiv = 3;myFeedFunc()">My Posts</li>
+              <li ng-click="showDiv = 4">Analytics</li>
+              <li ng-click="showDiv = 5;logOutInsta()">Logout</li>
+            </ul>
+    </div>
+      <center>
+            <div ng-switch="showDiv">
+              <div ng-switch-when="1">
+                <br />
+                <br />
+                    <b>Email</b> : {{email}} <br />
+                    <b>Gender</b> : {{gender}} <br />
+                    <b>Phone</b> : {{unum}} <br />
+                    <b>Type</b> : {{uacc}} <br />
+              </div>
+              <div ng-switch-when="2">
+                <br />
+                <br />
+                <div ng-repeat="x in feed">
+                  <b>{{x['user']['username']}}</b> <br />
+                  <img ng-src="{{x['image_versions2']['candidates'][0]['url']}}" ng-click="showData = !showData;clearTensor()" height="600" width="600"/> <br />
+                  <div ng-show="showData">
+                    <b>Likes</b> : {{x['like_count']}} &nbsp;&nbsp;&nbsp;&nbsp;
+                    <b>Comments</b> : {{x['comment_count']}} &nbsp;&nbsp;&nbsp;&nbsp;<br />
+                    <b>Caption</b> : {{x['caption']['text']}} &nbsp;&nbsp;&nbsp;&nbsp;<br />
+                    <button ng-click="checkTensorFlow(x['image_versions2']['candidates'][1]['url'])">Check</button>
+                    <b>Image Description</b> : {{tensorDescription['description']}} <br />
+                  </div>
+                  <hr>
+                </div>
+
+              </div>
+              <div ng-switch-when="3">
+                <br />
+                <br />
+                <div ng-repeat="x in myPosts">
+                  <b>{{x['user']['username']}} </b><br />
+                  <img ng-src="{{x['image_versions2']['candidates'][0]['url']}}" ng-click="showData = !showData;clearTensor()" height="600" width="600"/> <br />
+                  <div ng-show="showData">
+                    <b>Likes</b> : {{x['like_count']}} &nbsp;&nbsp;&nbsp;&nbsp;
+                    <b>Comments</b> : {{x['comment_count']}} &nbsp;&nbsp;&nbsp;&nbsp;<br />
+                    <b>Caption</b> : {{x['caption']['text']}} &nbsp;&nbsp;&nbsp;&nbsp;<br />
+                    <button ng-click="checkTensorFlow(x['image_versions2']['candidates'][1]['url'])">Check</button>
+                    <b>Image Description</b> : {{tensorDescription['description']}} <br />
+                  </div>
+                  <hr>
+                </div>
+              </div>
+              <div ng-switch-when="4">
+                  <label class="anal" ng-click="likeAnal();showAnal = 1">Likes</label>
+                  <label class="anal" ng-click="followAnal();showAnal = 2">Follow</label>
+                  <label class="anal" ng-click="followAccountAnal();showAnal = 3">Followers Analysis</label>
+                  <label class="anal" ng-click="topPost();showAnal = 4">Top Posts</label>
+                  <label class="anal" ng-click="getMapData();showAnal = 5">Map</label>
+                  <label class="anal" ng-click="showAnal = 6">Find Commons</label>
+                  <label class="anal" ng-click="postFrequency();showAnal = 7">Post Frequency</label>
+                <br>
+                <br>
+                <br>
+                <div ng-switch="showAnal">
+                  <div ng-switch-when="1">
+                    <fieldset style="border: 1px black solid" >
+                      <legend style="border: 1px black solid;margin-left: 1em; padding: 0.2em 0.8em ">Likes Analysis</legend>
+                      <div>
+                        <div id="likesCount">
+                            <h3 align="left">Total Likes : {{LikesData['totalLikes']}}</h3>
+                            <h3 align="left">Unique Likes : {{LikesData['uniqueLikes']}}</h3>
+                            <h3 align="left">Average Likes : {{LikesData['avg_likes']}}</h3>
+                        </div>
+                        <div id="likersImageDiv" >
+                          <img ng-src="./Resources/{{LikesData['topLikers']}}"/>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <div ng-switch-when="2">
+                    <fieldset style="border: 1px black solid">
+                      <legend style="border: 1px black solid;margin-left: 1em; padding: 0.2em 0.8em ">Follow Analysis</legend>
+                        <img id="followImageDiv" ng-src="./Resources/{{FollowData['followGraph']}}" />
+                        <img id ="followingImageDiv" ng-src="./Resources/{{FollowData['followingGraph']}}" />
+                    </fieldset>
+                  </div>
+                  <div ng-switch-when="3">
+                    <fieldset style="border: 1px black solid">
+                      <legend style="border: 1px black solid;margin-left: 1em; padding: 0.2em 0.8em ">Followers Analysis</legend>
+                        <img id="followImageDiv" ng-src="./Resources/{{FollowAccountData['followAccountGraph']}}" />
+                        <img id ="followingImageDiv" ng-src="./Resources/{{FollowAccountData['followingAccountGraph']}}" />
+                    </fieldset>
+                  </div>
+                  <div ng-switch-when="4">
+                    <fieldset style="border: 1px black solid">
+                      <legend style="border: 1px black solid;margin-left: 1em; padding: 0.2em 0.8em ">Top Posts</legend>
+                      <div id = "followImageDiv">
+                        <h2>Most Liked</h3>
+                        <img ng-src="{{topPostData['topLikeUrl']}}" height="300" width="300"/>
+                          <h4>Likes : {{topPostData['likes']}}</h4>
+                      </div>
+                      <div id="followingImageDiv">
+                        <h2>Most Commented</h3>
+                        <img ng-src="{{topPostData['topCommentUrl']}}" height="300" width="300"/>
+                        <h4>Comments : {{topPostData['comments']}}</h4>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <div ng-switch-when="5">
+                    <div id="mapid"></div>
+                  </div>
+                  <div ng-switch-when="6">
+                    <center>
+                      <br />
+                      <h3>Enter Instagram Handle</h3>
+                      <br />
+                      <input type="text" ng-model="usernameFollow" placeholder="@"/>
+                      <button ng-click="commonFollowers(usernameFollow)">Submit</button>
+                      <br />
+                      <ul>
+                        <div ng-repeat="x in commonData['common']">
+                          <li class="common">
+                            (<a href="https://www.instagram.com/{{x}}/">@{{x}}</a>)
+                          </li>
+                        </div>
+                      </ul>
+                    </center>
+                  </div>
+                  <div ng-switch-when="7">
+                    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+                  </div>
+                  <div ng-switch-default>
+                  </div>
+                </div>
+              </div>
+              <div ng-switch-default>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                  <img src="./Resources/logo.png" />
+              </div>
+            </div>
+      </center>
+    <script>
+      var app = angular.module("myApp",[]);
+      app.controller("myctl",myCtlFunc);
+      myCtlFunc.$inject = ['$scope','$http','$window']
+      function myCtlFunc($scope, $http, $window){
+        $scope.usernameFollow="";
+        $scope.cssApply = function(){
+          $scope.myObj = {
+            "background-color": "#111111"
+          }
+        }
+        $window.onload = function(){
+            $http.get("http://localhost:5000/userData")
+            .then(getInfo);
+        }
+        var getInfo = function(response) {
+          $scope.uname = response.data;
+          var val = $scope.uname['a']['user']['gender'];
+          if ( val == 1 ){
+              $scope.gender = "Male"
+          }else{
+            $scope.gender = "Female"
+          }
+          $scope.email = $scope.uname['a']['user']['email'];
+          $scope.unum = $scope.uname['a']['user']['phone_number'];
+          if ( $scope.uname['a']['user']['is_private']){
+            $scope.uacc = "Private Account";
+          }else{
+            $scope.uacc = "Public Account";
+          }
+        }
+        $scope.feedFunc = function(){
+          $http.get("http://localhost:5000/userFeed")
+          .then(getFeed)
+        }
+        var getFeed = function(response) {
+          var temp_json = response.data;
+          temp_json.push($scope.feed)
+          $scope.feed = temp_json;
+        }
+        $scope.checkTensorFlow = function(url){
+          var data = {
+            "url": url
+          }
+          $scope.dataMain = JSON.stringify(data)
+          $http.put("http://localhost:5000/userFeed",$scope.dataMain)
+          .then(checkImage);
+        }
+        var checkImage = function(response) {
+             $scope.tensorDescription = response.data
+        }
+        $scope.clearTensor = function(){
+          $scope.tensorDescription={};
+        }
+        $scope.myFeedFunc = function(){
+          $http.get("http://localhost:5000/myFeed")
+          .then(myFeed)
+        }
+        var myFeed = function(response) {
+          $scope.myPosts = response.data;
+        }
+        $scope.likeAnal = function(){
+            $http.get("http://localhost:5000/likeAnalytics")
+            .then(likeGraphs)
+        }
+        var likeGraphs = function(response){
+          $scope.LikesData = response.data;
+        }
+        $scope.followAnal = function(){
+          $http.get("http://localhost:5000/followAnalytics")
+          .then(followGraphs)
+        }
+        var followGraphs = function(response){
+          $scope.FollowData = response.data;
+        }
+        $scope.followAccountAnal = function(){
+          $http.get("http://localhost:5000/followAccountAnalytics")
+          .then(followAccountGraphs)
+        }
+        var followAccountGraphs = function(response){
+          $scope.FollowAccountData = response.data;
+        }
+        $scope.topPost = function(){
+          $http.get("http://localhost:5000/topPost")
+          .then(topPostImages)
+        }
+        var topPostImages = function(response){
+          $scope.topPostData = response.data;
+        }
+        $scope.logOutInsta = function(){
+          $http.get("http://localhost:5000/logout")
+          .then(clearData)
+        }
+        var clearData = function(response){
+          if ( response.data['a'] == 1 ){
+            $window.location.href = "http://localhost/Python-Project/login.html";
+          }
+        }
+        $scope.commonFollowers = function(uname2){
+          var data = {
+            "u_name": uname2
+          }
+          $scope.dataMain = JSON.stringify(data)
+          $http.put("http://localhost:5000/common",$scope.dataMain)
+          .then(getCommon);
+        }
+        var getCommon = function(response){
+          $scope.commonData = response.data;
+        }
+        $scope.postFrequency = function(){
+          $http.get("http://localhost:5000/postFrequency")
+          .then(respPostFrequency)
+        }
+        var respPostFrequency = function(response){
+          var postFrequencyData = response.data
+          var chart = new CanvasJS.Chart("chartContainer", {
+          		title:{
+          			text: "Posts/Hour"
+          		},
+          		data: [
+          		{
+          			// Change type to "doughnut", "line", "splineArea", etc.
+          			type: "splineArea",
+          			dataPoints: postFrequencyData
+          		}
+          		]
+          	});
+          	chart.render();
+        }
+        //map function write any scope above this
+        $scope.getMapData = function(){
+          $http.get("http://localhost:5000/mapData")
+          .then(respMap)
+        }
+        var respMap = function(response){
+          var langLat = response.data;
+          var count = Object.keys(langLat).length;
+          var mymap = L.map('mapid').setView([28.7041,77.1025], 5);
+          L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          maxZoom: 18,
+          id: 'mapbox.streets',
+          accessToken: 'sk.eyJ1Ijoic2h1YmhhZW0iLCJhIjoiY2ptM3NtdDNiMzJhaTNrcXZ1a3hlNmk2ayJ9.9OHc6ca5r6vh071Uf5zidQ'
+          }).addTo(mymap);
+          var popUpArray = new Array();
+          for(var i = 0 ; i < count ; i++){
+            popUpArray[i] = "<img src="+langLat[i]['url']+" height=300 width=300/><br />"+langLat[i]['name']+" : "+langLat[i]['count'];
+          }
+          for(var i = 0 ; i < count ; i++){
+            L.marker([langLat[i]['lat'],langLat[i]['lng']]).bindPopup(popUpArray[i]).addTo(mymap);
+          }
+        }
+      };
+    </script>
+  </body>
+</html>
